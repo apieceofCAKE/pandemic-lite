@@ -178,7 +178,7 @@
                 <mxCell id="41" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="36">
                     <mxGeometry y="79" width="296" height="91" as="geometry"/>
                 </mxCell>
-                <mxCell id="42" value="&lt;span style=&quot;text-wrap-mode: nowrap;&quot;&gt;+ mover(destino: Cidade)&lt;/span&gt;&lt;br style=&quot;text-wrap-mode: nowrap;&quot;&gt;&lt;span style=&quot;text-wrap-mode: nowrap;&quot;&gt;+ construirEstacaoDePesquisa(cidade: Cidade)&lt;/span&gt;&lt;br style=&quot;text-wrap-mode: nowrap;&quot;&gt;&lt;span style=&quot;text-wrap-mode: nowrap;&quot;&gt;+ tratarDoenca(localizacaoAtual: Cidade)&lt;/span&gt;&lt;div&gt;+ SacarCartaDeJogador(mao)&lt;br style=&quot;text-wrap-mode: nowrap;&quot;&gt;&lt;span style=&quot;text-wrap-mode: nowrap;&quot;&gt;+ descartarCartaDeJogador(carta: CartaDeJogador)&lt;/span&gt;&lt;/div&gt;" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;align=left;" vertex="1" parent="41">
+                <mxCell id="42" value="&lt;span style=&quot;text-wrap-mode: nowrap;&quot;&gt;+ mover(destino: Cidade)&lt;/span&gt;&lt;br style=&quot;text-wrap-mode: nowrap;&quot;&gt;&lt;span style=&quot;text-wrap-mode: nowrap;&quot;&gt;+ construirEstacaoDePesquisa(cidade: Cidade)&lt;/span&gt;&lt;br style=&quot;text-wrap-mode: nowrap;&quot;&gt;&lt;span style=&quot;text-wrap-mode: nowrap;&quot;&gt;+ tratarDoenca(localizacao: Cidade)&lt;/span&gt;&lt;div&gt;+ SacarCartaDeJogador(mao)&lt;br style=&quot;text-wrap-mode: nowrap;&quot;&gt;&lt;span style=&quot;text-wrap-mode: nowrap;&quot;&gt;+ descartarCartaDeJogador(carta: CartaDeJogador)&lt;/span&gt;&lt;/div&gt;" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;align=left;" vertex="1" parent="41">
                     <mxGeometry width="296" height="91" as="geometry">
                         <mxRectangle width="296" height="91" as="alternateBounds"/>
                     </mxGeometry>
@@ -262,7 +262,7 @@
                         <mxPoint y="16" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="63" value="&lt;span style=&quot;text-align: left; text-wrap-mode: wrap;&quot;&gt;- localizacaoAtual: Cidade&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                <mxCell id="63" value="&lt;span style=&quot;text-align: left; text-wrap-mode: wrap;&quot;&gt;- localizacao: Cidade&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
                     <mxGeometry x="334" y="80" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="64" value="- cidades: Map&amp;lt;String, Cidade&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
