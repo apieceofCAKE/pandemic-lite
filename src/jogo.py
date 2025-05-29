@@ -14,7 +14,7 @@ class PandemicGame:
         return cls._instance  # Sempre retorna a mesma instância
     
     def __init_game(self):
-        print("----Bem vindo ao Pandemic----")
+        print(f"\n{Back.WHITE}{Fore.BLACK}=== PANDEMIC ==={Style.RESET_ALL}")
         self.jogadores = []
         self.num_jogadores = 0
         self.baralho_jogador = list(MAPA_JOGO.keys())
@@ -67,7 +67,7 @@ class PandemicGame:
                     raise RuntimeError("Baralho de jogador vazio!")
                 carta = self.baralho_jogador.pop()
                 jogador.adicionar_carta(carta)
-                print(f"{jogador.nome} recebeu a carta: {carta}")
+                cor = MAPA_JOGO[carta]["cor"].cor_terminal
 
     def _infecao_inicial(self):
         """Realiza a infecção inicial (9 cidades)"""
@@ -96,24 +96,40 @@ class PandemicGame:
             self.descarte_infeccao.extend(grupo)
     
     def mostrar_mapa_colorido(self):
-        """Exibe o mapa com cores no terminal"""
+        """Exibe o mapa com cores no terminal usando apenas cor_terminal"""
+        # Cabeçalho com estilo
         print(f"\n{Back.WHITE}{Fore.BLACK}=== MAPA DO PANDEMIC ==={Style.RESET_ALL}")
+        
+        # Legenda usando cor_terminal
         print("Legenda:")
-        for cor, valor in CORES_TERMINAL.items():
-            print(f"{valor}█ {cor.name}{Style.RESET_ALL}")
+        for cor in CorDoenca:
+            print(f"{cor.cor_terminal}█ {cor.name}{Style.RESET_ALL}")
         print()
         
+        # Mostra cidades e conexões
         for cidade, dados in MAPA_JOGO.items():
-            cor = CORES_TERMINAL[dados["cor"]]
-            vizinhos = []
-            for v in dados["vizinhos"]:
-                vizinhos.append(f"{CORES_TERMINAL[MAPA_JOGO[v]['cor']]}{v}{Style.RESET_ALL}")
+            cor_cidade = dados["cor"].cor_terminal
+            vizinhos_formatados = []
             
-            print(f"{cor}• {cidade.ljust(15)}{Style.RESET_ALL} → {', '.join(vizinhos)}")
+            for vizinho in dados["vizinhos"]:
+                cor_vizinho = MAPA_JOGO[vizinho]["cor"].cor_terminal
+                vizinhos_formatados.append(f"{cor_vizinho}{vizinho}{Style.RESET_ALL}")
+            
+            print(f"{cor_cidade}• {cidade.ljust(15)}{Style.RESET_ALL} → {', '.join(vizinhos_formatados)}")
         
-        # Mostra posição dos jogadores
+        # Mostra jogadores e suas cartas
         print(f"\n{Style.BRIGHT}Jogadores:{Style.RESET_ALL}")
         for jogador in self.jogadores:
-            cidade = jogador.localizacao
-            cor = CORES_TERMINAL[MAPA_JOGO[cidade]["cor"]]
-            print(f"{jogador.nome} ({jogador.papel}): {cor}{cidade}{Style.RESET_ALL}")
+            cidade_jogador = jogador.localizacao
+            cor_cidade = MAPA_JOGO[cidade_jogador]["cor"].cor_terminal
+            
+            # Informações do jogador
+            print(f"{jogador.nome} ({jogador.papel}): {cor_cidade}{cidade_jogador}{Style.RESET_ALL}")
+            
+            # Cartas na mão do jogador
+            if jogador.mao:
+                print("  Cartas: ", end="")
+                for carta in jogador.mao:
+                    cor_carta = MAPA_JOGO[carta]["cor"].cor_terminal
+                    print(f"{cor_carta}{carta}{Style.RESET_ALL},", end=" ")
+                print()

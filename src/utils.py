@@ -7,15 +7,17 @@ class CorDoenca(Enum):
     YELLOW = auto()
     BLACK = auto()
     RED = auto()
+    
+    @property
+    def cor_terminal(self):
+        """Retorna a cor correspondente do terminal"""
+        return {
+            CorDoenca.BLUE: Fore.BLUE,
+            CorDoenca.YELLOW: Fore.YELLOW,
+            CorDoenca.BLACK: Fore.LIGHTBLACK_EX,
+            CorDoenca.RED: Fore.RED
+        }.get(self, Fore.RESET)
 
-CORES_TERMINAL = {
-    CorDoenca.BLUE: Fore.BLUE,
-    CorDoenca.YELLOW: Fore.YELLOW,
-    CorDoenca.BLACK: Fore.LIGHTBLACK_EX,  # Preto no terminal pode ser difícil de ler
-    CorDoenca.RED: Fore.RED
-}
-
-# Cidades simplificadas para o escopo do projeto [cite: 11]
 MAPA_JOGO = {
     "Atlanta": {"cor": CorDoenca.BLUE, "vizinhos": ["Chicago", "Washington", "Miami"]},
     "Chicago": {"cor": CorDoenca.BLUE, "vizinhos": ["Atlanta", "San Francisco", "Montreal"]},
@@ -46,7 +48,7 @@ MAPA_JOGO = {
     
     "Tokyo": {"cor": CorDoenca.RED, "vizinhos": ["San Francisco", "Osaka"]},
     "Osaka": {"cor": CorDoenca.RED, "vizinhos": ["Tokyo"]},
-    "Sydney": {"cor": CorDoenca.YELLOW, "vizinhos": ["Los Angeles"]}
+    "Sydney": {"cor": CorDoenca.RED, "vizinhos": ["Los Angeles"]}
 }
 
 PAPEIS_JOGO = [
