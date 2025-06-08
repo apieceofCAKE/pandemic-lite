@@ -1,9 +1,8 @@
-# Ficheiro: commands.py
 from abc import ABC, abstractmethod
 from jogador import Jogador
 from tabuleiro import Cidade
 from utils import CorDoenca
-from colorama import Style # Importação adicionada
+from colorama import Style
 
 class Command(ABC):
     """Interface para o Padrão Command."""
@@ -29,7 +28,6 @@ class MoverCommand(Command):
             self.jogador.acoes_restantes -= 1
             return True
         else:
-            # --- LINHA CORRIGIDA ---
             cor_destino = self.destino.cor.cor_terminal
             cor_local = self.jogador.localizacao.cor.cor_terminal
             print(f"Movimento inválido: {cor_destino}{self.destino.nome}{Style.RESET_ALL} não é vizinha de {cor_local}{self.jogador.localizacao.nome}{Style.RESET_ALL}.")

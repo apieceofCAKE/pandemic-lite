@@ -1,4 +1,3 @@
-# Ficheiro: roles.py
 from abc import ABC, abstractmethod
 
 class Papel(ABC):
@@ -14,7 +13,6 @@ class Papel(ABC):
     def __repr__(self):
         return self.nome
 
-# --- CLASSES RENOMEADAS PARA PORTUGUÊS ---
 class Cientista(Papel):
     def __init__(self):
         super().__init__("Cientista", "Precisa de apenas 4 cartas para descobrir a cura.")

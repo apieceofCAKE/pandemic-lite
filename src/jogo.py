@@ -1,4 +1,3 @@
-# Ficheiro: jogo.py
 from tabuleiro import Tabuleiro
 from states import SetupState
 from utils import CorDoenca
@@ -34,9 +33,8 @@ class PandemicGame:
         while self.rodando:
             self.estado.manusear()
 
-    # --- NOVO MÉTODO PARA INFECÇÃO INICIAL ---
     def infeccao_inicial(self):
-        """Realiza a infecção inicial do tabuleiro."""
+        """Infecção inicial do tabuleiro."""
         print("\n--- Infecção Inicial ---")
         try:
             # 3 cidades com 3 cubos
@@ -81,7 +79,6 @@ class PandemicGame:
             total_cubos = sum(cidade.cubos.values())
             marcador_cubos = '*' * total_cubos
             
-            # Junta o nome da cidade com os marcadores
             nome_com_cubos = f"{cidade.nome}{marcador_cubos}"
             
             print(f"{cor_cidade}• {nome_com_cubos.ljust(20)}{Style.RESET_ALL} → {', '.join(vizinhos_formatados)}")

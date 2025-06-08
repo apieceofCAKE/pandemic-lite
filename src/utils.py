@@ -1,7 +1,7 @@
-# Ficheiro: utils.py
 from enum import Enum, auto
 from colorama import Fore
 
+""""Informações e funções auxiliares do jogo Pandemic."""
 class CorDoenca(Enum):
     AZUL = auto()
     AMARELO = auto()

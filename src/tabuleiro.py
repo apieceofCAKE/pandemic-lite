@@ -1,4 +1,3 @@
-# Ficheiro: tabuleiro.py
 from utils import CorDoenca
 
 class Cidade:
@@ -41,7 +40,7 @@ class Cidade:
 
 class Tabuleiro:
     """Information Expert: Conhece todas as cidades, suas conexões e o estado geral do tabuleiro."""
-    # --- Cores no mapa atualizadas para português ---
+    
     MAPA_JOGO = {
         "Atlanta": {"cor": CorDoenca.AZUL, "vizinhos": ["Chicago", "Washington", "Miami"]},
         "Chicago": {"cor": CorDoenca.AZUL, "vizinhos": ["Atlanta", "San Francisco", "Montreal"]},

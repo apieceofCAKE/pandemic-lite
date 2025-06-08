@@ -1,4 +1,3 @@
-# Ficheiro: jogador.py
 from papeis import Papel
 from tabuleiro import Cidade
 from cartas import CartaJogador
@@ -30,7 +29,6 @@ class Jogador:
              return True
         return False
         
-    # --- MÉTODO MODIFICADO PARA INCLUIR MARCADOR DE CUBOS ---
     def __repr__(self):
         # Formata as cartas na mão do jogador com suas respectivas cores
         cartas_str = ", ".join([f"{c.cor.cor_terminal}{c.nome}{Style.RESET_ALL}" for c in self.mao])

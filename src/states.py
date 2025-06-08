@@ -1,4 +1,3 @@
-# Ficheiro: states.py
 import random
 from abc import ABC, abstractmethod
 from utils import PAPEIS_JOGO, CorDoenca
@@ -7,6 +6,8 @@ from jogador import Jogador
 from cartas import CartaJogador, CartaInfeccao, Deck
 from commands import MoverCommand, TratarDoencaCommand
 from colorama import Style
+
+""""Classes que representam os estados do jogo, seguindo o padrão State."""
 
 class GameState(ABC):
     def __init__(self, jogo):
@@ -98,13 +99,11 @@ class PlayerTurnState(GameState):
         if escolha == '1':
             vizinhos_coloridos = [f"{v.cor.cor_terminal}{v.nome}{Style.RESET_ALL}" for v in jogador.localizacao.vizinhos]
             print(f"Vizinhos: {', '.join(vizinhos_coloridos)}")
-            # --- ENTRADA DA CIDADE MODIFICADA ---
             nome_cidade = input("Mover para qual cidade? ").strip().title()
             cidade_destino = self.jogo.tabuleiro.obter_cidade(nome_cidade)
             if cidade_destino:
                 return MoverCommand(jogador, cidade_destino)
         elif escolha == '2':
-            # --- TEXTO DE AJUDA MODIFICADO ---
             cor_str = input("Tratar qual cor (AZUL, AMARELO, PRETO, VERMELHO)? ").upper().strip()
             try:
                 cor = CorDoenca[cor_str]
