@@ -1,135 +1,106 @@
-# File: src/jogo.py
-from random import sample
-from random import shuffle
-from utils import *
-from jogador import Jogador
+# Ficheiro: jogo.py
+from tabuleiro import Tabuleiro
+from states import SetupState
+from utils import CorDoenca
+from colorama import Fore, Back, Style
 
 class PandemicGame:
-    _instance = None  # Variável de classe para armazenar a única instância
+    """Singleton, Facade e Controller do jogo."""
+    _instance = None
 
     def __new__(cls):
         if cls._instance is None:
-            cls._instance = super().__new__(cls)  # Cria a instância se não existir
-            cls._instance.__init_game()  # Chama o inicializador
-        return cls._instance  # Sempre retorna a mesma instância
-    
-    def __init_game(self):
-        print(f"\n{Back.WHITE}{Fore.BLACK}=== PANDEMIC ==={Style.RESET_ALL}")
+            cls._instance = super().__new__(cls)
+            cls._instance._inicializado = False
+        return cls._instance
+
+    def __init__(self):
+        if self._inicializado:
+            return
+        self.tabuleiro = Tabuleiro()
         self.jogadores = []
-        self.num_jogadores = 0
-        self.baralho_jogador = list(MAPA_JOGO.keys())
-        self.baralho_infeccao = list(MAPA_JOGO.keys())
-        shuffle(self.baralho_jogador)
-        shuffle(self.baralho_infeccao)
-        self.estado_jogo = "configuracao"
+        self.baralho_jogador = None
+        self.baralho_infeccao = None
+        self.turno_atual = 0
+        self.estado = SetupState(self)
+        self.rodando = True
+        self._inicializado = True
+
+    def definir_estado(self, novo_estado):
+        self.estado = novo_estado
 
     def run(self):
-        if not self.jogadores:
-            self.setup_game()
-        self.mostrar_mapa_colorido()
+        print(f"\n{Back.WHITE}{Fore.BLACK}=== PANDEMIC ==={Style.RESET_ALL}")
+        while self.rodando:
+            self.estado.manusear()
 
-    def setup_game(self):
-        numero_jogadores = self._get_numero_de_jogadores()
-        nome_jogadores = self._get_nome_dos_jogadores(numero_jogadores)
-        papeis = sample(PAPEIS_JOGO, numero_jogadores)
-        self.jogadores = []
-        for nome, papel in zip(nome_jogadores, papeis):
-            self.jogadores.append(Jogador(nome,papel))
-            print(f"Jogador {nome} é {papel}")
-        self.num_jogadores = numero_jogadores
-        self._distribuir_cartas_iniciais()
+    # --- NOVO MÉTODO PARA INFECÇÃO INICIAL ---
+    def infeccao_inicial(self):
+        """Realiza a infecção inicial do tabuleiro."""
+        print("\n--- Infecção Inicial ---")
+        try:
+            # 3 cidades com 3 cubos
+            for _ in range(3):
+                carta = self.baralho_infeccao.comprar()
+                cidade = self.tabuleiro.obter_cidade(carta.nome)
+                for _ in range(3):
+                    cidade.adicionar_cubo(cidade.cor)
+            
+            # 3 cidades com 2 cubos
+            for _ in range(3):
+                carta = self.baralho_infeccao.comprar()
+                cidade = self.tabuleiro.obter_cidade(carta.nome)
+                for _ in range(2):
+                    cidade.adicionar_cubo(cidade.cor)
 
-    def _get_numero_de_jogadores(self):
-        """Pede um número entre 2 e 4."""
-        while True:
-            try:
-                num = int(input("Quantos jogadores? (2-4): "))
-                if 2 <= num <= 4:
-                    return num
-                print("Número inválido. Digite 2, 3 ou 4.")
-            except ValueError:
-                print("Digite um número válido.")
-    
-    def _get_nome_dos_jogadores(self, n):
-        """Pede o nome de cada jogador."""
-        nomes = []
-        for i in range (1,n+1):
-            nomes.append(input(f"Nome do jogador {i}: ".strip()))
-        return nomes
-        
-    def _distribuir_cartas_iniciais(self):
-        """Distribui cartas iniciais para os jogadores"""
-        cartas_por_jogador = 4 if self.num_jogadores == 2 else 3 if self.num_jogadores == 3 else 2
-        
-        for jogador in self.jogadores:
-            for _ in range(cartas_por_jogador):
-                if not self.baralho_jogador:
-                    raise RuntimeError("Baralho de jogador vazio!")
-                carta = self.baralho_jogador.pop()
-                jogador.adicionar_carta(carta)
-                cor = MAPA_JOGO[carta]["cor"].cor_terminal
+            # 3 cidades com 1 cubo
+            for _ in range(3):
+                carta = self.baralho_infeccao.comprar()
+                cidade = self.tabuleiro.obter_cidade(carta.nome)
+                cidade.adicionar_cubo(cidade.cor)
+        except AttributeError:
+            print("ERRO: Baralho de infecção não foi configurado corretamente.")
+        print("------------------------")
 
-    def _infecao_inicial(self):
-        """Realiza a infecção inicial (9 cidades)"""
-        # Divide as primeiras 9 cartas em 3 grupos de 3
-        grupos = [self.baralho_infeccao[:3], 
-                 self.baralho_infeccao[3:6], 
-                 self.baralho_infeccao[6:9]]
+    def mostrar_mapa(self):
+        """Exibe o mapa com cores e contagem de cubos no terminal."""
+        print(f"\n{Back.BLUE}{Fore.WHITE}--- MAPA GLOBAL ---{Style.RESET_ALL}")
         
-        print("\n=== Infecção Inicial ===")
-        for i, grupo in enumerate(grupos, start=1):
-            cubos = 4 - i  # 3, 2, 1 cubos respectivamente
-            for cidade in grupo:
-                cor = MAPA_JOGO[cidade]["cor"]
-                
-                # Verifica se há cubos disponíveis
-                if self.cubos_disponiveis[cor] < cubos:
-                    raise RuntimeError(f"Sem cubos suficientes de {cor.name}!")
-                
-                # Adiciona cubos à cidade
-                self.cubos_cidades[cidade].extend([cor] * cubos)
-                self.cubos_disponiveis[cor] -= cubos
-                
-                print(f"Colocados {cubos} cubos {cor.name} em {cidade}")
-                
-            # Coloca as cartas usadas no descarte de infecção
-            self.descarte_infeccao.extend(grupo)
-    
-    def mostrar_mapa_colorido(self):
-        """Exibe o mapa com cores no terminal usando apenas cor_terminal"""
-        # Cabeçalho com estilo
-        print(f"\n{Back.WHITE}{Fore.BLACK}=== MAPA DO PANDEMIC ==={Style.RESET_ALL}")
-        
-        # Legenda usando cor_terminal
-        print("Legenda:")
+        legenda_str = "Legenda: "
         for cor in CorDoenca:
-            print(f"{cor.cor_terminal}█ {cor.name}{Style.RESET_ALL}")
-        print()
+            legenda_str += f"{cor.cor_terminal}█ {cor.name}{Style.RESET_ALL}  "
+        print(legenda_str)
+        print("-" * 70)
         
-        # Mostra cidades e conexões
-        for cidade, dados in MAPA_JOGO.items():
-            cor_cidade = dados["cor"].cor_terminal
-            vizinhos_formatados = []
+        cidades_ordenadas = sorted(self.tabuleiro.cidades.values(), key=lambda c: c.nome)
+        for cidade in cidades_ordenadas:
+            cor_cidade = cidade.cor.cor_terminal
             
-            for vizinho in dados["vizinhos"]:
-                cor_vizinho = MAPA_JOGO[vizinho]["cor"].cor_terminal
-                vizinhos_formatados.append(f"{cor_vizinho}{vizinho}{Style.RESET_ALL}")
+            vizinhos_formatados = [f"{v.cor.cor_terminal}{v.nome}{Style.RESET_ALL}" for v in cidade.vizinhos]
+
+            total_cubos = sum(cidade.cubos.values())
+            marcador_cubos = '*' * total_cubos
             
-            print(f"{cor_cidade}• {cidade.ljust(15)}{Style.RESET_ALL} → {', '.join(vizinhos_formatados)}")
-        
-        # Mostra jogadores e suas cartas
-        print(f"\n{Style.BRIGHT}Jogadores:{Style.RESET_ALL}")
+            # Junta o nome da cidade com os marcadores
+            nome_com_cubos = f"{cidade.nome}{marcador_cubos}"
+            
+            print(f"{cor_cidade}• {nome_com_cubos.ljust(20)}{Style.RESET_ALL} → {', '.join(vizinhos_formatados)}")
+        print("-" * 70)
+
+    def mostrar_estado_jogadores(self):
+        print("\n--- POSIÇÃO DOS JOGADORES ---")
         for jogador in self.jogadores:
-            cidade_jogador = jogador.localizacao
-            cor_cidade = MAPA_JOGO[cidade_jogador]["cor"].cor_terminal
-            
-            # Informações do jogador
-            print(f"{jogador.nome} ({jogador.papel}): {cor_cidade}{cidade_jogador}{Style.RESET_ALL}")
-            
-            # Cartas na mão do jogador
-            if jogador.mao:
-                print("  Cartas: ", end="")
-                for carta in jogador.mao:
-                    cor_carta = MAPA_JOGO[carta]["cor"].cor_terminal
-                    print(f"{cor_carta}{carta}{Style.RESET_ALL},", end=" ")
-                print()
+            print(jogador)
+        print("----------------------------")
+    
+    def obter_jogador_atual(self):
+        return self.jogadores[self.turno_atual]
+
+    def proximo_turno(self):
+        self.turno_atual = (self.turno_atual + 1) % len(self.jogadores)
+    
+    def verificar_fim_de_jogo(self):
+        if self.baralho_jogador and len(self.baralho_jogador.cartas) == 0:
+            print("O baralho de jogador acabou! Derrota!")
+            return True
+        return False
