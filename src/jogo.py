@@ -35,8 +35,9 @@ class PandemicGame:
 
     def infeccao_inicial(self):
         """Infecção inicial do tabuleiro."""
-        print("\n--- Infecção Inicial ---")
+        print(f"\n{Back.WHITE}{Fore.BLACK}--- Infecção Inicial ---{Style.RESET_ALL}")
         try:
+            print("--- Cidades com 3 cubos ---")
             # 3 cidades com 3 cubos
             for _ in range(3):
                 carta = self.baralho_infeccao.comprar()
@@ -44,6 +45,7 @@ class PandemicGame:
                 for _ in range(3):
                     cidade.adicionar_cubo(cidade.cor)
             
+            print("\n--- Cidades com 2 cubos ---")
             # 3 cidades com 2 cubos
             for _ in range(3):
                 carta = self.baralho_infeccao.comprar()
@@ -51,6 +53,7 @@ class PandemicGame:
                 for _ in range(2):
                     cidade.adicionar_cubo(cidade.cor)
 
+            print("\n--- Cidades com 1 cubo ---")
             # 3 cidades com 1 cubo
             for _ in range(3):
                 carta = self.baralho_infeccao.comprar()
@@ -62,7 +65,7 @@ class PandemicGame:
 
     def mostrar_mapa(self):
         """Exibe o mapa com cores e contagem de cubos no terminal."""
-        print(f"\n{Back.BLUE}{Fore.WHITE}--- MAPA GLOBAL ---{Style.RESET_ALL}")
+        print(f"\n{Back.WHITE}{Fore.BLACK}--- MAPA GLOBAL ---{Style.RESET_ALL}")
         
         legenda_str = "Legenda: "
         for cor in CorDoenca:
@@ -85,7 +88,7 @@ class PandemicGame:
         print("-" * 70)
 
     def mostrar_estado_jogadores(self):
-        print("\n--- POSIÇÃO DOS JOGADORES ---")
+        print(f"\n{Back.WHITE}{Fore.BLACK}--- POSIÇÃO DOS JOGADORES ---{Style.RESET_ALL}")
         for jogador in self.jogadores:
             print(jogador)
         print("----------------------------")

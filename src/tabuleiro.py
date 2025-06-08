@@ -1,3 +1,4 @@
+from colorama import Style
 from utils import CorDoenca
 
 class Cidade:
@@ -16,7 +17,7 @@ class Cidade:
     def adicionar_cubo(self, cor: CorDoenca):
         if self.cubos[cor] < 3:
             self.cubos[cor] += 1
-            print(f"Cubo de doença {cor.name.lower()} adicionado a {self.nome}.")
+            print(f"{self.cor.cor_terminal}Cubo {cor.name.lower()}{Style.RESET_ALL} adicionado a {self.cor.cor_terminal}{self.nome}{Style.RESET_ALL}.")
             return True
         print(f"{self.nome} já tem 3 cubos. Um surto ocorreria!")
         return False
@@ -40,7 +41,7 @@ class Cidade:
 
 class Tabuleiro:
     """Information Expert: Conhece todas as cidades, suas conexões e o estado geral do tabuleiro."""
-    
+
     MAPA_JOGO = {
         "Atlanta": {"cor": CorDoenca.AZUL, "vizinhos": ["Chicago", "Washington", "Miami"]},
         "Chicago": {"cor": CorDoenca.AZUL, "vizinhos": ["Atlanta", "San Francisco", "Montreal"]},
