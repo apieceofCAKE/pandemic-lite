@@ -1,33 +1,44 @@
-# File: src/jogador.py
-from cidade import Cidade
-from carta_de_jogador import CartaDeJogador
-from cor_da_doenca import CorDaDoenca
+from papeis import Papel
+from tabuleiro import Cidade
+from cartas import CartaJogador
+from colorama import Style
 
 class Jogador:
-    def __init__(self, nome: str, localizacao_atual: Cidade):
+    def __init__(self, nome: str, papel: Papel):
         self.nome = nome
-        self.localizacao_atual = localizacao_atual
-        self.mao = []  # List of CartaDeJogador objects
+        self.papel = papel
+        self.mao = []
+        self.localizacao: Cidade = None
+        self.acoes_restantes = 4
 
-    def mover(self, destino: Cidade):
-        self.localizacao_atual = destino
-        print(f"{self.nome} moveu-se para {destino.nome}.")
+    def definir_localizacao(self, cidade: Cidade):
+        self.localizacao = cidade
 
-    def construir_estacao_de_pesquisa(self):
-        self.localizacao_atual.construir_estacao_de_pesquisa()
-        print(f"{self.nome} construiu uma estação de pesquisa em {self.localizacao_atual.nome}.")
-
-    def tratar_doenca(self, cor: CorDaDoenca):
-        self.localizacao_atual.remover_cubo_de_doenca(cor)
-        print(f"{self.nome} tratou a doença {cor.name} em {self.localizacao_atual.nome}.")
-
-    def sacar_carta_de_jogador(self, carta: CartaDeJogador):
+    def adicionar_carta(self, carta: CartaJogador):
         self.mao.append(carta)
-        print(f"{self.nome} recebeu a carta: {carta}.")
 
-    def descartar_carta_jogador(self, carta: CartaDeJogador):
-        if carta in self.mao:
-            self.mao.remove(carta)
-            print(f"{self.nome} descartou a carta: {carta}.")
-        else:
-            print(f"A carta {carta} não está na mão de {self.nome}.")
+    def mover_para(self, nova_cidade: Cidade):
+        cor_destino = nova_cidade.cor.cor_terminal
+        print(f"{self.nome} moveu-se para {cor_destino}{nova_cidade.nome}{Style.RESET_ALL}.")
+        self.localizacao = nova_cidade
+
+    def tratar_doenca(self, cor):
+        if self.localizacao.remover_cubo(cor):
+             cor_local = self.localizacao.cor.cor_terminal
+             print(f"{self.nome} tratou a doença {cor.name.lower()} em {cor_local}{self.localizacao.nome}{Style.RESET_ALL}.")
+             return True
+        return False
+        
+    def __repr__(self):
+        # Formata as cartas na mão do jogador com suas respectivas cores
+        cartas_str = ", ".join([f"{c.cor.cor_terminal}{c.nome}{Style.RESET_ALL}" for c in self.mao])
+        
+        # Lógica para adicionar os asteriscos na localização atual
+        cidade_atual = self.localizacao
+        total_cubos = sum(cidade_atual.cubos.values())
+        marcador_cubos = '*' * total_cubos
+        
+        # Formata a localização do jogador com cor e os marcadores de cubos
+        local_str = f"{cidade_atual.cor.cor_terminal}{cidade_atual.nome}{marcador_cubos}{Style.RESET_ALL}"
+        
+        return f"-> {self.nome} ({self.papel}) em {local_str} | Ações: {self.acoes_restantes} | Mão: [{cartas_str or 'Vazia'}]"
