@@ -18,13 +18,11 @@ class CorDoenca(Enum):
             CorDoenca.VERMELHO: Fore.RED
         }.get(self, Fore.RESET)
 
-# --- NOMES DOS PAPÉIS TRADUZIDOS ---
 PAPEIS_JOGO = {
     '1': 'Cientista',
     '2': 'Pesquisador',
     '3': 'EspecialistaEmOperacoes',
     '4': 'EspecialistaEmQuarentena',
-    '5': 'PlanejadorDeContingencia',
 }
 
-CARTAS_EPIDEMIA = ["Epidemia"] * 5
+CARTAS_EPIDEMIA = 5

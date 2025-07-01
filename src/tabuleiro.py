@@ -1,4 +1,5 @@
-from colorama import Style
+from colorama import Fore, Style
+# from states import GameOverState estava dando problema com import circular
 from utils import CorDoenca
 
 class Cidade:
@@ -14,17 +15,38 @@ class Cidade:
         if cidade not in self.vizinhos:
             self.vizinhos.append(cidade)
 
-    def adicionar_cubo(self, cor: CorDoenca):
-        if self.cubos[cor] < 3:
-            self.cubos[cor] += 1
-            print(f"{self.cor.cor_terminal}Cubo {cor.name.lower()}{Style.RESET_ALL} adicionado a {self.cor.cor_terminal}{self.nome}{Style.RESET_ALL}.")
+    def adicionar_cubo(self, cor: CorDoenca, todos_os_jogadores, jogo):
+        from states import GameOverState
+        if jogo.doencas_erradicadas[cor]:
+            print(f"Infecção por {cor.name} ignorada, pois a doença foi erradicada.")
             return True
-        print(f"{self.nome} já tem 3 cubos. Um surto ocorreria!")
-        return False
+        for jogador in todos_os_jogadores:
+            if jogador.papel.is_quarentena():
+                if jogador.localizacao == self or self in jogador.localizacao.vizinhos:
+                    print(f"Ação de infecção bloqueada em {self.cor.cor_terminal}{self.nome}{Style.RESET_ALL} pela habilidade do Especialista em Quarentena!")
+                    return False
 
-    def remover_cubo(self, cor: CorDoenca):
+        if jogo.estoque_cubos[cor] <= 0:
+            print(f"{Fore.RED}FIM DE JOGO: Acabaram os cubos da cor {cor.name}! Derrota!{Style.RESET_ALL}")
+            jogo.definir_estado(GameOverState(jogo))
+            return False
+        
+        if jogo.doencas_erradicadas[cor] == True:
+            return
+        if self.cubos[cor] >= 3:
+            jogo.iniciar_surto(self, cor)
+            return True
+
+        self.cubos[cor] += 1
+        jogo.estoque_cubos[cor] -= 1
+        print(f"{self.cor.cor_terminal}Cubo {cor.name.lower()}{Style.RESET_ALL} adicionado a {self.cor.cor_terminal}{self.nome}{Style.RESET_ALL}.")
+        return True
+
+    def remover_cubo(self, cor: CorDoenca, jogo):
         if self.cubos[cor] > 0:
             self.cubos[cor] -= 1
+            jogo.estoque_cubos[cor] += 1
+            jogo.verificar_erradicacao(cor)
             return True
         return False
 

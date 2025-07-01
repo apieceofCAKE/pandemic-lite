@@ -1,7 +1,7 @@
 from papeis import Papel
 from tabuleiro import Cidade
 from cartas import CartaJogador
-from colorama import Style
+from colorama import Fore, Style
 
 class Jogador:
     def __init__(self, nome: str, papel: Papel):
@@ -30,15 +30,24 @@ class Jogador:
         return False
         
     def __repr__(self):
-        # Formata as cartas na mão do jogador com suas respectivas cores
-        cartas_str = ", ".join([f"{c.cor.cor_terminal}{c.nome}{Style.RESET_ALL}" for c in self.mao])
+        cartas_na_mao_str = []
+        for c in self.mao:
+            if hasattr(c, 'cor') and c.cor:
+                cartas_na_mao_str.append(f"{c.cor.cor_terminal}{c.nome}{Style.RESET_ALL}")
+            else:
+                cartas_na_mao_str.append(f"{Fore.MAGENTA}{Style.BRIGHT}{c.nome}{Style.RESET_ALL}")
+        cartas_str = ", ".join(cartas_na_mao_str)
         
-        # Lógica para adicionar os asteriscos na localização atual
         cidade_atual = self.localizacao
-        total_cubos = sum(cidade_atual.cubos.values())
-        marcador_cubos = '*' * total_cubos
+
+        marcadores_coloridos = []
+        marcadores_sem_cor = []
+        for cor, quantidade in cidade_atual.cubos.items():
+            if quantidade > 0:
+                marcadores_coloridos.append(f"{cor.cor_terminal}{'*' * quantidade}{Style.RESET_ALL}")
+                marcadores_sem_cor.append('*' * quantidade)
         
-        # Formata a localização do jogador com cor e os marcadores de cubos
-        local_str = f"{cidade_atual.cor.cor_terminal}{cidade_atual.nome}{marcador_cubos}{Style.RESET_ALL}"
+        marcador_str_colorido = f" [{''.join(marcadores_coloridos)}]" if marcadores_coloridos else ""
+        local_str_colorido = f"{cidade_atual.cor.cor_terminal}{cidade_atual.nome}{Style.RESET_ALL}{marcador_str_colorido}"
         
-        return f"-> {self.nome} ({self.papel}) em {local_str} | Ações: {self.acoes_restantes} | Mão: [{cartas_str or 'Vazia'}]"
+        return f"-> {self.nome} ({self.papel}) em {local_str_colorido} | Ações: {self.acoes_restantes} | Mão: [{cartas_str or 'Vazia'}]"
