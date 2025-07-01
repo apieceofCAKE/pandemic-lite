@@ -48,6 +48,7 @@ class TratarDoencaCommand(Command):
         if self.jogador.tratar_doenca(self.cor):
             self.jogador.acoes_restantes -= 1
             if self.jogo.curas_descobertas[self.cor] == True:
+                self.jogo.estoque_cubos[self.cor] = self.jogador.localizacao.cubos[self.cor]
                 self.jogador.localizacao.cubos[self.cor] = 0
             return True
         else:
