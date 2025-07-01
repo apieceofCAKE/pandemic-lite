@@ -214,9 +214,3 @@ class PandemicGame:
 
     def proximo_turno(self):
         self.turno_atual = (self.turno_atual + 1) % len(self.jogadores)
-    
-    def verificar_fim_de_jogo_por_falta_de_cartas(self):
-        if self.baralho_jogador and len(self.baralho_jogador.cartas) == 0:
-            print("O baralho de jogador acabou! Derrota!")
-            return True
-        return False
